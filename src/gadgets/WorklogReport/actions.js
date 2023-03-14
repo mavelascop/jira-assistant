@@ -102,6 +102,7 @@ export function getColumnSettings(_, getState) {
             { field: "issueType", displayText: "Issue Type", type: "string" },
             { field: "epicDisplay", displayText: "Epic", type: "string", format: (text, row) => formatTicket(text, row.epicUrl) },
             { field: "parent", displayText: "Parent", type: "string", format: (text, row) => formatTicket(text, row.parentUrl) },
+            { field: "parentType", displayText: "Parent Type", type: "string" },
             { field: "ticketNo", displayText: "Ticket No", type: "string", format: (text, row) => formatTicket(text, row.ticketUrl) },
             { field: "statusName", displayText: "Status", type: "string" },
             { field: "summary", displayText: "Summary", type: "string" },

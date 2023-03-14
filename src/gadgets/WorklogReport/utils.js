@@ -52,6 +52,7 @@ function getFlatMapper(usr, groupName, sprintName) {
         parent: log.parent,
         parentSummary: log.parentSummary,
         parentUrl: log.parent ? getTicketUrl(log.parent) : null,
+        parentType: log.parentType,
         epicDisplay: log.epicDisplay,
         epicUrl: log.epicUrl,
         ticketNo: log.ticketNo,

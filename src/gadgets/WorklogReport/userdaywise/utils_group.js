@@ -248,6 +248,7 @@ export function generateUserDayWiseData(data, groups, pageSettings) {
                         parent: firstTkt.parent,
                         parentUrl: firstTkt.parent ? viewIssueUrl(firstTkt.parent) : null,
                         parentSummary: firstTkt.parentSummary,
+                        parentType: firstTkt.parentType,
                         projectKey: firstTkt.projectKey,
                         projectName: firstTkt.projectName,
                         assignee: firstTkt.assignee,
@@ -267,6 +268,7 @@ export function generateUserDayWiseData(data, groups, pageSettings) {
                         totalHours: 0,
                         totalCost: 0
                     };
+
                     ticketsMap[ticket.ticketNo] = ticket;
                     let totalHours = 0;
                     items.forEach(item => {
@@ -403,6 +405,7 @@ function getLogUserObj(issue, fields, worklog, append, { epicNameField, epicDeta
         iconUrl: fields.issuetype?.iconUrl,
         parent: fields.parent?.key,
         parentSummary: fields.parent?.fields?.summary,
+        parentType: fields.parent?.fields?.issuetype?.name,
         assignee: fields.assignee?.displayName,
         reporter: fields.reporter?.displayName,
         summary: fields.summary,
