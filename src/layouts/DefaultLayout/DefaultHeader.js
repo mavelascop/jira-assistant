@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { UncontrolledDropdown, DropdownMenu, DropdownToggle, Nav, NavItem } from 'reactstrap';
 
 import { AppVersionNo } from '../../constants/common';
-import { WebSiteUrl } from '../../constants/urls';
+//import { WebSiteUrl } from '../../constants/urls';
 
 import { inject } from '../../services/injector-service';
 import YoutubeVideo from '../../dialogs/YoutubeVideo';
@@ -26,20 +26,20 @@ import { Button } from '../../controls';
 import { SettingsCategory } from '../../constants/settings';
 import './DefaultHeader.scss';
 
-const allowWebVersion = config.features.common.allowWebVersion !== false;
+const allowWebVersion = false; //config.features.common.allowWebVersion !== false;
 
-const showShareOption = config.features.header.shareWithOthers !== false;
-const showYoutubeOption = config.features.header.youtubeHelp !== false;
-const showDonateButton = !!config.modules.contribute;
-const showContactUs = config.modules.contactUs !== false;
-const siteUrl = showShareOption ? WebSiteUrl : undefined;
+const showShareOption = false; //config.features.header.shareWithOthers !== false;
+const showYoutubeOption = false; //config.features.header.youtubeHelp !== false;
+const showDonateButton = false; //!!config.modules.contribute;
+const showContactUs = false; //config.modules.contactUs !== false;
+const siteUrl = false; //showShareOption ? WebSiteUrl : undefined;
 
 class DefaultHeader extends PureComponent {
   constructor(props) {
     super(props);
     inject(this, "AppBrowserService", "SessionService", "NotificationService", "AnalyticsService", "SettingsService");
     const cUser = this.$session.CurrentUser;
-    this.disableNotification = !config.features?.header?.devUpdates || cUser.disableDevNotification;
+    this.disableNotification = true; //!config.features?.header?.devUpdates || cUser.disableDevNotification;
     this.disableJiraUpdates = config.features?.header?.jiraUpdates === false || cUser.disableJiraUpdates;
     this.userId = cUser.userId;
     this.currentJiraInstance = getHostFromUrl(cUser.jiraUrl);

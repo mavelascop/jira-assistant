@@ -19,7 +19,7 @@ class GeneralSettings extends PureComponent {
         super(props);
         inject(this, 'SessionService', 'SettingsService');
         this.state = { settings: {} };
-        this.noDonations = this.$session.CurrentUser.noDonations;
+        this.noDonations = true; //this.$session.CurrentUser.noDonations;
         this.userId = this.$session.CurrentUser.userId;
         this.isAtlasCloud = this.$session.CurrentUser.isAtlasCloud;
         this.settings = {};
