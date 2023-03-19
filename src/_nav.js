@@ -1,4 +1,4 @@
-import { getRouteUrl, isPluginBuild, isWebBuild } from "./constants/build-info";
+//import { getRouteUrl, isPluginBuild, isWebBuild } from "./constants/build-info";
 import config from './customize';
 
 export function getDashboardMenu(d, idx, userId) {
@@ -20,7 +20,7 @@ export function getDashboardMenu(d, idx, userId) {
 }
 
 const { dashboards,
-    calendar, importWorklog, importIssues, planningPoker,
+    calendar, importWorklog, importIssues, //planningPoker,
 
     // Reports
     worklogReport, worklogReportOld, sprintReport, customReport, estimateVsActual, reportBuilder,
@@ -29,7 +29,7 @@ const { dashboards,
     userGroups, generalSettings, advancedSettings,
 
     // Menu groups
-    activitiesGroup = calendar || importWorklog || importIssues || planningPoker,
+    activitiesGroup = calendar || importWorklog || importIssues, //|| planningPoker,
     reportsGroup = worklogReport || worklogReportOld || sprintReport || customReport || estimateVsActual || reportBuilder,
     settingsGroup = userGroups || generalSettings || advancedSettings
 } = config.modules;
@@ -74,14 +74,14 @@ const navigation = [
                     variant: 'success',
                     text: 'BETA'
                 }
-            },
+            }/*,
             planningPoker && {
                 name: 'Poker',
                 id: 'PLP',
                 external: !isPluginBuild,
                 url: getRouteUrl(isWebBuild ? '/../poker' : '/poker'),
                 icon: 'fa fa-gamepad'
-            }
+            }*/
         ].filter(Boolean)
     },
     reportsGroup && {
