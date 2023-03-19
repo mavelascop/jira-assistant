@@ -121,3 +121,24 @@ export function getColumnSettings(_, getState) {
         ].filter(Boolean);
     };
 }
+
+export function getColumnSettingsBonifications(_, getState) {
+    const formatSecs = convertSecs(_, getState);
+    const { $userutils: { formatDateTime } } = inject('UserUtilsService');
+
+    return function (formatResume) {
+        const timeFormat = getState('logFormat') === '1' ? 'string' : 'number';
+        const dateFormat = 'MM/yyyy';
+
+        //displayFormat: null, sortValueFun: null, groupValueFunc: null
+        //, allowSorting: true, allowGrouping: true
+        return [
+            { field: "projectName", displayText: "Proyecto", type: "string" },
+            { field: "parentType", displayText: "Parent Issue Type", type: "string" },
+            { field: "summary", displayText: "Resumen", type: "string", format: (text, row) => formatResume(text, row.ticketNo, row.ticketUrl) },
+            { field: "userDisplay", displayText: "Responsable", type: "string" },
+            { field: "timeSpent", displayText: "Total horas incurridas", type: timeFormat, format: formatSecs },
+            { field: "logTime", displayText: "Actualizada", type: "datetime", format: (val) => formatDateTime(val, dateFormat) }
+        ].filter(Boolean);
+    };
+}

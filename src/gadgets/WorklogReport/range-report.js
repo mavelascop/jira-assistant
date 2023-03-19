@@ -1,7 +1,7 @@
 import moment from "moment";
 import { inject } from "../../services/injector-service";
 import { filterDaysWithoutWorklog, generateUserDayWiseData, getEpicDetails, getUserWiseWorklog, getWeekHeader } from "./userdaywise/utils_group";
-import { generateFlatWorklogData, getFieldsToFetch, getProjectKeys, getUniqueUsersFromGroup } from "./utils";
+import { generateFlatWorklogData, getFieldsToFetch, getProjectKeys, getUniqueUsersFromGroup, generateFlatWorklogDataGroupedByTicketNo } from "./utils";
 
 export function generateRangeReport(setState, getState) {
     return async function () {
@@ -23,9 +23,11 @@ export function generateRangeReport(setState, getState) {
                 return;
             }
 
-            const { groupReport, flatWorklogs } = result;
+            const { groupReport, flatWorklogs, flatWorklogsGroupedByTicketNo } = result;
+
             newState.groupReport = groupReport;
             newState.flatWorklogs = flatWorklogs;
+            newState.flatWorklogsGroupedByTicketNo = flatWorklogsGroupedByTicketNo;
 
             newState.reportLoaded = true;
         } catch (err) {
@@ -57,13 +59,15 @@ async function generateWorklogReportForDateRange(fromDate, toDate, state) {
         const { groupByFunc, getGroupName } = getGroupingFunction(reportUserGrp, epicNameField?.id, epicDetails);
 
         const flatWorklogs = [];
+        const flatWorklogsGroupedByTicketNo = [];
         const groupReport = issues.groupBy(groupByFunc)
             .map(({ values }) => ({ issues: values, grpName: getGroupName(values) })) // Create object with group names
             .sortBy(({ grpName }) => grpName) // Sort with group names
             .reduce((obj, { grpName, issues }) => {
                 const {
                     flatWorklogs: flatData,
-                    groupReport: { dates, groupedData: g }
+                    groupReport: { dates, groupedData: g },
+                    flatWorklogsGroupedByTicketNo : flatData2
                 } = formGroupedWorklogs(issues, fromDate, toDate, name?.toLowerCase(), state, useGroups && savedGroups, epicDetails, obj.dates, grpName);
 
                 obj.dates = dates;
@@ -74,6 +78,7 @@ async function generateWorklogReportForDateRange(fromDate, toDate, state) {
                 }
 
                 flatWorklogs.addRange(flatData);
+                flatWorklogsGroupedByTicketNo.addRange(flatData2);
 
                 // Add the item in the grouplist to our array of groups
                 const [grp] = g;
@@ -95,7 +100,7 @@ async function generateWorklogReportForDateRange(fromDate, toDate, state) {
         groupReport.dates = filterDaysWithoutWorklog(state.daysToHide, groupReport.dates);
         groupReport.weeks = getWeekHeader(groupReport.dates);
 
-        return { flatWorklogs, groupReport };
+        return { flatWorklogs, groupReport, flatWorklogsGroupedByTicketNo };
     } else {
         return formGroupedWorklogs(issues, fromDate, toDate, name?.toLowerCase(), state, useGroups && savedGroups, epicDetails);
     }
@@ -162,8 +167,9 @@ function formGroupedWorklogs(issues, fromDate, toDate, name, state, userGroups, 
 
     const groupReport = generateUserDayWiseData(userwiseLog, userGroups, settings, state);
     const flatWorklogs = generateFlatWorklogData(userwiseLog, userGroups);
-
-    return { groupReport, flatWorklogs };
+    const flatWorklogsGroupedByTicketNo = generateFlatWorklogDataGroupedByTicketNo(userwiseLog, userGroups);
+    
+    return { groupReport, flatWorklogs, flatWorklogsGroupedByTicketNo };
 }
 
 // Set as empty as it would look odd in chart headers

@@ -38,6 +38,26 @@ export function generateFlatWorklogData(data, groups, sprintName) {
     );
 }
 
+export function generateFlatWorklogDataGroupedByTicketNo(data, groups, sprintName) {
+    const result = groups.union(grp => grp.users.union(usr =>
+        data[getUserName(usr, true)]
+            ?.logData?.map(getFlatMapper(usr, grp.name, sprintName)) || [])
+    );
+
+    const newList = [];
+    result.forEach(log => {
+        const elem = newList.find(e => e.ticketNo === log.ticketNo);
+        if (elem === undefined) {
+            newList.push(log);
+        } else {
+            elem.timeSpent += log.timeSpent;
+            elem.logTime = (elem.logTime > log.logTime)? elem.logTime : log.logTime;
+        }
+    } );
+
+    return newList;
+}
+
 function getFlatMapper(usr, groupName, sprintName) {
     const { $userutils: { getTicketUrl } } = inject('UserUtilsService');
     const userName = usr.displayName;

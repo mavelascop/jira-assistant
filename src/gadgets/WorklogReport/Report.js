@@ -3,6 +3,7 @@ import { TabPanel, TabView } from 'primereact/tabview';
 import GroupedDataGrid from './userdaywise/GroupedDataGrid';
 import { connect } from './datastore';
 import FlatGroupableWorklog from './FlatGroupableWorklog';
+import FlatGroupableWorklogBonifications from './FlatGroupableWorklogBonifications';
 import UserProjectWiseSummary from './userprojectwise';
 import Visualization from './visualization';
 import './WorklogGadget.scss';
@@ -53,6 +54,9 @@ const ReportData = connect(function ({ boardId, hasData, showCostReport, showSum
         </TabPanel>}
         <TabPanel header="Flat (Groupable)" contentClassName="no-padding">
             <FlatGroupableWorklog exportSheetName="Flat (Groupable)" boardId={boardId} onSettingsChanged={onSettingsChanged} />
+        </TabPanel>
+        <TabPanel header="Worklog Bonificaciones" contentClassName='no-padding'>
+            <FlatGroupableWorklogBonifications exportSheetName="Worklog Bonificaciones" boardId={boardId} onSettingsChanged={onSettingsChanged} />
         </TabPanel>
         {showSummaryReport && <TabPanel header="Summary - (User project wise)" contentClassName="no-padding">
             <UserProjectWiseSummary exportSheetName="Summary (User project wise)" boardId={boardId} />
