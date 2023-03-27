@@ -8,11 +8,12 @@ const config = {
         calendar: true,
         importWorklog: true,
         importIssues: true,
-        planningPoker: !isPluginBuild,
+        planningPoker: false,
 
         // Reports
         worklogReport: true,
-        worklogReportOld: true,
+        worklogReportOld: false,
+        issueReport: true,
         sprintReport: !isPluginBuild,
         customReport: true,
         estimateVsActual: true,

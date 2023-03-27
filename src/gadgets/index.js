@@ -10,9 +10,10 @@ import MyOpenTickets from './MyOpenTickets';
 import MyReports from './MyReports';
 import PendingWorklog from './PendingWorklog';
 import TicketWiseWorklog from './TicketWiseWorklog';
+import IssueReport from './IssueReport/IssueReport';
 
 
-export { GadgetActionType, Calendar, DateWiseWorklog, WorklogGadget, WorklogReport, WorklogBarChartGadget, MyBookmarks, MyOpenTickets, MyReports, PendingWorklog, TicketWiseWorklog, StatusWiseTimeSpentGadget };
+export { GadgetActionType, Calendar, DateWiseWorklog, WorklogGadget, WorklogReport, WorklogBarChartGadget, MyBookmarks, MyOpenTickets, MyReports, PendingWorklog, TicketWiseWorklog, StatusWiseTimeSpentGadget, IssueReport };
 
 export const GadgetList = [
     { id: 'myOpenTickets', icon: 'fa-eye', name: 'My Open Tickets', details: 'Contains the list of open tickets assigned to you' },
@@ -28,5 +29,6 @@ export const GadgetList = [
     { id: 'listDay', icon: 'fa-calendar', name: 'Current day worklog List', details: 'Display calendar as listview for current date with worklog and meetings' },
     { id: 'listWeek', icon: 'fa-calendar', name: 'Current week worklog list', details: 'Display calendar as listview for current week with worklog and meetings' },
     { id: 'listMonth', icon: 'fa-calendar', name: 'Current month worklog list', details: 'Display calendar as listview for current month with worklog and meetings' },
-    { id: 'sWiseTSpent', icon: 'fa-list-alt', name: 'Status Wise Time Spent', details: 'Provides summary of time spent on each ticket on individual status' }
+    { id: 'sWiseTSpent', icon: 'fa-list-alt', name: 'Status Wise Time Spent', details: 'Provides summary of time spent on each ticket on individual status' },
+    { id: 'issueReport', icon: 'fa-table', name: 'Issue Report', details: 'Issue Report for QA' }
 ];

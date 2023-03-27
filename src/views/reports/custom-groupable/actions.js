@@ -80,9 +80,6 @@ export async function loadReportData(query, utils) {
 
     const reportData = data.map(processIssue.bind(ref));
 
-    console.log("CustomReport data3", reportData);
-    console.log("ref", ref);
-
     if (ref.hasWorklogs) {
         const usrObj = ref.usersObj;
         const userFields = Object.keys(usrObj).map(u => {
@@ -107,6 +104,9 @@ export async function loadReportData(query, utils) {
 
         columnList.splice(wlIndex, 1, ...userFields);
     }
+
+    console.log("CustomReport data3", reportData);
+    console.log(columnList);
 
     const newState = { isLoading: false, reportData, columnList, settings: query.settings };
 

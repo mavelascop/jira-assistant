@@ -16,6 +16,7 @@ const SprintReportComponent = config.modules.sprintReport && React.lazy(() => im
 const WorklogReportComponent = config.modules.worklogReportOld && React.lazy(() => import('./views/reports/worklog-report/WorklogReport'));
 const NewWorklogReportComponent = config.modules.worklogReport && React.lazy(() => import('./views/reports/worklog-report/NewWorklogReport'));
 const ReportBuilderComponent = config.modules.reportBuilder && React.lazy(() => import('./views/reports/report-builder/ReportBuilder'));
+const IssueReportComponent = config.modules.issueReport && React.lazy(() => import('./views/reports/issue-report/IssueReport'));
 
 // Settings
 const GeneralSettingsComponent = config.modules.generalSettings && React.lazy(() => import('./views/settings/general/GeneralSettings'));
@@ -48,6 +49,10 @@ const sessionBasedRoute = [
     NewWorklogReportComponent && {
         path: '/reports/worklog',
         component: NewWorklogReportComponent
+    },
+    IssueReportComponent && {
+        path: '/reports/issues',
+        component: IssueReportComponent
     },
     EstimateActualComponent && {
         path: '/reports/estimateactual',

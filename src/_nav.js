@@ -23,14 +23,14 @@ const { dashboards,
     calendar, importWorklog, importIssues, //planningPoker,
 
     // Reports
-    worklogReport, worklogReportOld, sprintReport, customReport, estimateVsActual, reportBuilder,
+    worklogReport, /*worklogReportOld,*/ issueReport, sprintReport, customReport, estimateVsActual, reportBuilder,
 
     // Settings
     userGroups, generalSettings, advancedSettings,
 
     // Menu groups
     activitiesGroup = calendar || importWorklog || importIssues, //|| planningPoker,
-    reportsGroup = worklogReport || worklogReportOld || sprintReport || customReport || estimateVsActual || reportBuilder,
+    reportsGroup = worklogReport /*|| worklogReportOld*/ || issueReport || sprintReport || customReport || estimateVsActual || reportBuilder,
     settingsGroup = userGroups || generalSettings || advancedSettings
 } = config.modules;
 
@@ -94,7 +94,7 @@ const navigation = [
                 url: '/reports/worklog',
                 icon: 'fa fa-users'
             },
-            worklogReportOld && {
+            /*worklogReportOld && {
                 name: 'Worklog Report',
                 id: 'R-UD',
                 url: '/reports/userdaywise',
@@ -102,6 +102,16 @@ const navigation = [
                 badge: {
                     variant: 'danger',
                     text: 'OLD'
+                }
+            },*/
+            issueReport && {
+                name: 'Issue Report',
+                id: 'R-IS',
+                url: '/reports/issues',
+                icon: 'fa fa-table',
+                badge: {
+                    variant: 'success',
+                    text: 'BETA'
                 }
             },
             sprintReport && {
