@@ -6,6 +6,7 @@ import {
 } from "../../../display-controls";
 import { resolve } from "../../../services/injector-service";
 import { execAst, parseCustExpr } from "../../../common/jsExec";
+import * as moment from 'moment';
 
 export async function loadReportData(query, utils) {
     if (!query) { return {}; }
@@ -18,6 +19,7 @@ export async function loadReportData(query, utils) {
     console.log("dataFields", dataFields);
     console.log("CustomReport data", data);
 
+    // Take all subtask codes to retrieve all the info needed to visualize
     if (dataFields.includes("subtasks")) {
         const subtaskIds = [];
         data.forEach(
@@ -36,6 +38,7 @@ export async function loadReportData(query, utils) {
             subtaskDataFields.push("worklog");
             subtaskDataFields.push("parent");
 
+            // For each subtask, get all info needed, in blocks of 10 due Jira restrictions
             let it = 0;
             do {
                 const subtaskIdsPartial = subtaskIds.slice(it, it+10);
@@ -48,6 +51,7 @@ export async function loadReportData(query, utils) {
                 it = it +10;
             } while (subtaskIds.length > it);
 
+            // This block stringify all subtasks and group them by parent
             subtasksData.forEach(
                 elem => {
                     if (subtasksMap.has(elem.fields.parent.key)) {
@@ -63,6 +67,7 @@ export async function loadReportData(query, utils) {
             
             console.log(subtasksMap);
 
+            // Finally, match previous gotten "parent" issues with all subtasks, overwriting subtask att
             data.forEach(
                 elem => elem.fields.subtasks = subtasksMap.get(elem.key)
             );
@@ -106,20 +111,32 @@ export async function loadReportData(query, utils) {
     }
 
     console.log("CustomReport data3", reportData);
-    console.log(columnList);
+    console.log("columnList", columnList);
+
+    // Overwrite subtasks param type to string and no component for visualization reasons
+    columnList.forEach(column => {
+        if (column.field === "subtasks") {
+            column.viewComponent = null;
+            column.type = "string";
+        }
+    });
+
+    console.log("columnList2", columnList);
 
     const newState = { isLoading: false, reportData, columnList, settings: query.settings };
 
     return newState;
 }
 
+// Stringify a subtask
 function subtaskArrayToStr(elem) {
-    console.log(elem);
     let lastUpdate = "";
-    if (elem.fields.worklog.worklogs.length > 0) {
+    if (elem.fields.worklog.worklogs.length > 1) {
         lastUpdate = elem.fields.worklog.worklogs.reduce(function(a, b) {
-                return a.updated > b.updated? a.updated : b.updated;
+                return a.updated > b.updated? moment(a.updated).format('DD/MM/YYYY') : moment(b.updated).format('DD/MM/YYYY');
         });
+    } else if (elem.fields.worklog.worklogs.length > 0) {
+        lastUpdate = moment(elem.fields.worklog.worklogs[0].updated).format('DD/MM/YYYY');
     }
     
     return `${elem.fields.parent.key}#${elem.key}#${elem.fields.issuetype.name}#${elem.fields.status.name}#${elem.fields.customfield_15307}#${lastUpdate};`;
