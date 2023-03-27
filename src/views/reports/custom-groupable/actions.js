@@ -13,12 +13,75 @@ export async function loadReportData(query, utils) {
     const $jira = resolve('JiraService');
     const dataFields = query.fields.map((f) => f.field);
     const data = await $jira.searchTickets(query.jql, dataFields);
+
+    console.log("jql", query.jql);
+    console.log("dataFields", dataFields);
+    console.log("CustomReport data", data);
+
+    if (dataFields.includes("subtasks")) {
+        const subtaskIds = [];
+        data.forEach(
+            elem => elem.fields.subtasks.forEach(
+                subtask => subtaskIds.push(subtask.key)
+            )
+        );
+
+        console.log("subtaskIds", subtaskIds.length);
+
+        if (subtaskIds && subtaskIds.length > 0) {
+            const subtasksMap = new Map();
+            let subtasksData = [];
+            const subtaskDataFields = [ ...dataFields ];
+            subtaskDataFields.filter(e => e !== "subtasks");
+            subtaskDataFields.push("worklog");
+            subtaskDataFields.push("parent");
+
+            let it = 0;
+            do {
+                const subtaskIdsPartial = subtaskIds.slice(it, it+10);
+
+                const subtasksJql = `key in ('${subtaskIdsPartial.join("', '")}')`;
+                const subtasksPartialData = await $jira.searchTickets(subtasksJql, subtaskDataFields);
+
+                subtasksData = subtasksData.concat(subtasksPartialData);
+
+                it = it +10;
+            } while (subtaskIds.length > it);
+
+            subtasksData.forEach(
+                elem => {
+                    if (subtasksMap.has(elem.fields.parent.key)) {
+                        subtasksMap.set(elem.fields.parent.key, 
+                            subtasksMap.get(elem.fields.parent.key).concat(subtaskArrayToStr(elem))
+                        );
+                    }
+                    else {
+                        subtasksMap.set( elem.fields.parent.key, subtaskArrayToStr(elem) );
+                    }
+                }
+            );
+            
+            console.log(subtasksMap);
+
+            data.forEach(
+                elem => elem.fields.subtasks = subtasksMap.get(elem.key)
+            );
+
+        }
+
+        console.log("CustomReport data2", data);
+
+    }
+
     const ref = { utils };
     const columnList = query.fields.filter(f => !f.hide).map(processDisplayField.bind(ref));
 
     ref.fieldWithExpr = columnList.filter(f => !!f.ast);
 
     const reportData = data.map(processIssue.bind(ref));
+
+    console.log("CustomReport data3", reportData);
+    console.log("ref", ref);
 
     if (ref.hasWorklogs) {
         const usrObj = ref.usersObj;
@@ -48,6 +111,18 @@ export async function loadReportData(query, utils) {
     const newState = { isLoading: false, reportData, columnList, settings: query.settings };
 
     return newState;
+}
+
+function subtaskArrayToStr(elem) {
+    console.log(elem);
+    let lastUpdate = "";
+    if (elem.fields.worklog.worklogs.length > 0) {
+        lastUpdate = elem.fields.worklog.worklogs.reduce(function(a, b) {
+                return a.updated > b.updated? a.updated : b.updated;
+        });
+    }
+    
+    return `${elem.fields.parent.key}#${elem.key}#${elem.fields.issuetype.name}#${elem.fields.status.name}#${elem.fields.customfield_15307}#${lastUpdate};`;
 }
 
 function processDisplayField(curCol) {
